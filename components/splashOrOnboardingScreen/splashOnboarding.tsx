@@ -69,7 +69,7 @@ const SplashOnboarding = () => {
             <div className="px-8 w-full flex flex-row gap-2">
                 {/* Prev button */}
                 <button
-                    className={`transition-all duration-300 ease-in-out flex items-center justify-center ${progressBar > 1 ? "w-[20%] opacity-100" : "w-0  pointer-events-none"
+                    className={`transition-all duration-100 ease-in-out flex items-center justify-center ${progressBar > 1 ? "w-[20%] opacity-100" : "w-0 opacity-0 pointer-events-none"
                         } h-13 font-bold rounded-full cursor-pointer ${progressBar === 3 ? "bg-stone-900 text-white" : "bg-[var(--accentColor)] text-white"
                         }`}
                     onClick={() => setProgressBar(prev => prev - 1)}
@@ -79,7 +79,7 @@ const SplashOnboarding = () => {
 
                 {/* Next button */}
                 <button
-                    className={`transition-all duration-300 ease-in-out h-13 font-bold rounded-full cursor-pointer ${progressBar > 1 ? "w-[80%]" : "w-full"
+                    className={`transition-all duration-100 ease-in-out h-13 font-bold rounded-full cursor-pointer ${progressBar > 1 ? "w-[80%]" : "w-full"
                         } ${progressBar === 3 ? "bg-stone-900 text-white" : "bg-[var(--accentColor)] text-white"}`}
                     onClick={handleButton}
                 >
