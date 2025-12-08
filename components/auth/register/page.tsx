@@ -23,15 +23,16 @@ const RegisterPage = ({
     const [viewPassInput, setViewPassInput] = useState(false)
     const GradeOption = ["Kelas 7", "Kelas 8", "Kelas 9"]
 
-    // HANDLE ERR DOCUMENT (DOM) 
-    useEffect(() => {
-        const EmailField = document.getElementById("EmailRegister")
-    }, [])
 
     // DOM STYLE
     const UsernameField = useRef<HTMLDivElement | null>(null)
-    const EmailField = document.getElementById("EmailRegister")
     const PasswordFiled = useRef<HTMLDivElement | null>(null)
+    let EmailField: HTMLElement | null = null
+
+    // HANDLE ERR DOCUMENT (DOM) 
+    useEffect(() => {
+        EmailField = document.getElementById("EmailRegister")
+    }, [])
 
     return (
         <div className="flex flex-col gap-4 w-full">
@@ -42,7 +43,7 @@ const RegisterPage = ({
             </div>
 
             {/* Email */}
-            <input type="text" id='EmailRegister' className="bg-stone-100 h-12 rounded-sm px-4 text-sm outline-none" value={email} onChange={(e) => { setEmail(e.target.value); if (EmailField) { EmailField.style.outline = 'none' } }} placeholder={"kamu@gmail.com"} />
+            <input type="text" id='EmailRegister' className="bg-stone-100 h-12 rounded-sm px-4 text-sm outline-none" value={email} onChange={(e) => { setEmail(e.target.value); if (EmailField) EmailField.style.outline = 'none' }} placeholder={"kamu@gmail.com"} />
 
             {/* Kelas */}
             <div className='flex flex-row gap-1 items-center justify-between bg-stone-100 rounded-sm pr-4 w-full'>
