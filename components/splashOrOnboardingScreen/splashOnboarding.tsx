@@ -29,15 +29,23 @@ const SplashOnboarding = () => {
     //     return () => clearTimeout(delay)
     // }, [showNotif])
 
+    // HANDLE ERR DOCUMENT (DOM)
+    useEffect(() => {
+        const UsernameRegister = document.getElementById("UsernameRegister")
+        const PasswordField = document.getElementById("Password")
+        const EmailRegister = document.getElementById("EmailRegister")
+        // JANGAN lakukan apa pun di luar sini
+    }, [])
+
     async function PostRegisterAcc() {
         const UsernameRegister = document.getElementById('UsernameRegister')
         const PasswordField = document.getElementById('Password')
         const EmailRegister = document.getElementById("EmailRegister")
 
-            // Reset outline 
-    if (UsernameRegister) UsernameRegister.style.outline = "none"
-    if (PasswordField) PasswordField.style.outline = "none"
-    if (EmailRegister) EmailRegister.style.outline = "none"
+        // Reset outline 
+        if (UsernameRegister) UsernameRegister.style.outline = "none"
+        if (PasswordField) PasswordField.style.outline = "none"
+        if (EmailRegister) EmailRegister.style.outline = "none"
 
         if (username.length >= 20 || username.length < 5) {
             alert("Masukkan nama yang valid")
@@ -74,10 +82,10 @@ const SplashOnboarding = () => {
             const data = await res.json()
             console.log(data)
             if (!res.ok) {
-                if(data.EmailMessage) {
+                if (data.EmailMessage) {
                     alert(data.EmailMessage)
-                    if(EmailRegister) {
-                        EmailRegister.style.outline="1px solid tomato"
+                    if (EmailRegister) {
+                        EmailRegister.style.outline = "1px solid tomato"
                     }
                 }
                 return
@@ -124,8 +132,8 @@ const SplashOnboarding = () => {
                             </div>
                             <div className="ms-3 text-sm font-normal">Daftar berhasil, silakan login!</div>
                         </div>
-                        
-                        <XIcon width={16} className="cursor-pointer" onClick={()=> setShowNotif(false)} />
+
+                        <XIcon width={16} className="cursor-pointer" onClick={() => setShowNotif(false)} />
                     </div>
                 </div>
                 <div
