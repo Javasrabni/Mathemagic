@@ -1,9 +1,10 @@
 "use client"
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { vibrateBtn } from "../vibrateBtn/ButtonVibrate"
-import { ChevronLeftIcon } from "lucide-react"
+import { ChevronLeftIcon, XIcon } from "lucide-react"
 import RegisterPage from "../auth/register/page"
+import LoginPage from "../auth/login/page"
 
 const SplashOnboarding = () => {
     const [progressBar, setProgressBar] = useState(1)
@@ -13,10 +14,50 @@ const SplashOnboarding = () => {
     const [email, setEmail] = useState("")
     const [grade, setGrade] = useState("")
     const [password, setPassword] = useState("")
+
+    // LOGIN/REGISTER STATUS
+    const [onRegister, setOnRegister] = useState(true)
+    const [showNotif, setShowNotif] = useState(false)
+
+    // CLOSEPOPUP
+    // useEffect(() => {
+    //     if (!showNotif) return;
+
+    //     const delay = setTimeout(() => {
+    //         setShowNotif(false)
+    //     }, 5000)
+    //     return () => clearTimeout(delay)
+    // }, [showNotif])
+
     async function PostRegisterAcc() {
+        const UsernameRegister = document.getElementById('UsernameRegister')
+        const PasswordField = document.getElementById('Password')
+        const EmailRegister = document.getElementById("EmailRegister")
+
+            // Reset outline 
+    if (UsernameRegister) UsernameRegister.style.outline = "none"
+    if (PasswordField) PasswordField.style.outline = "none"
+    if (EmailRegister) EmailRegister.style.outline = "none"
+
         if (username.length >= 20 || username.length < 5) {
             alert("Masukkan nama yang valid")
-            return
+            if (UsernameRegister) {
+                UsernameRegister.style.outline = "1px solid tomato"
+            }
+        }
+
+        if (!password || password.length <= 8) {
+            alert("Password setidaknya lebih dari 8 karakter")
+            if (PasswordField) {
+                PasswordField.style.outline = "1px solid tomato"
+            }
+        }
+
+        if (!email || !email.includes("@gmail.com")) {
+            alert("Masukkan email yang valid")
+            if (EmailRegister) {
+                EmailRegister.style.outline = "1px solid tomato"
+            }
         }
 
         try {
@@ -30,11 +71,23 @@ const SplashOnboarding = () => {
                     password
                 })
             })
-            if (res.ok) {
+            const data = await res.json()
+            console.log(data)
+            if (!res.ok) {
+                if(data.EmailMessage) {
+                    alert(data.EmailMessage)
+                    if(EmailRegister) {
+                        EmailRegister.style.outline="1px solid tomato"
+                    }
+                }
+                return
+            } else {
                 setUsername("")
                 setEmail("")
                 setGrade("")
                 setPassword("")
+                setOnRegister(false)
+                setShowNotif(true)
             }
         } catch (error) {
             console.error(error)
@@ -53,8 +106,8 @@ const SplashOnboarding = () => {
 
 
     const OnBoardingData = [
-        { no: 1, h1: "E-Learning School", p: 'Belajar matematika Sekolah Menengah Pertama (SMP) menyenangkan bersama sch-learning!', image: '/Assets/OnBoarding/boarding1.png' },
-        { no: 2, h1: "Kamu siap untuk belajar?", p: 'Kita akan belajar matematika dengan mudah, seru, dan lengap!', image: '/Assets/OnBoarding/boarding2.png' },
+        { no: 1, h1: "Mathemagic", p: 'Belajar matematika Sekolah Menengah Pertama (SMP) menyenangkan bersama Mathemagic!', image: '/Assets/OnBoarding/boarding1.png' },
+        { no: 2, h1: "Siap untuk belajar?", p: 'Kita akan belajar matematika dengan mudah, seru, dan lengap!', image: '/Assets/OnBoarding/boarding2.png' },
         { no: 3, h1: "Kita buat akun terlebih dahulu yuk!", p: 'Kami butuh informasi tentang kamu', image: '' },
     ]
 
@@ -62,6 +115,19 @@ const SplashOnboarding = () => {
         <div className="absolute flex flex-col items-center justify-between py-8 inset-0 top-0 left-0 h-screen w-full bg-white">
             {/* Container slider */}
             <div className="overflow-hidden flex-1 flex items-center w-full">
+                <div className={`w-full px-8 absolute z-10 left-[50%] translate-x-[-50%] transition-all duration-200 ease-in-out ${showNotif && progressBar === 3 && !onRegister ? 'top-12 opacity-100' : "top-[-64px] opacity-0"}`}>
+                    <div id="toast-success" className="flex items-center w-full justify-between p-4 text-gray-700 bg-green-100 rounded-lg shadow border border-green-300" role="alert">
+                        <div className="flex flex-row gap-1 items-center">
+                            <div className="inline-flex items-center justify-center shrink-0 w-7 h-7 text-green-600 bg-green-200 rounded">
+                                <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeLinecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11.917 9.724 16.5 19 7.5" /></svg>
+                                <span className="sr-only">Check icon</span>
+                            </div>
+                            <div className="ms-3 text-sm font-normal">Daftar berhasil, silakan login!</div>
+                        </div>
+                        
+                        <XIcon width={16} className="cursor-pointer" onClick={()=> setShowNotif(false)} />
+                    </div>
+                </div>
                 <div
                     className="flex transition-transform duration-200 ease-in-out w-full"
                     style={{ transform: `translateX(-${(progressBar - 1) * 100}%)` }}
@@ -70,7 +136,7 @@ const SplashOnboarding = () => {
                         <span key={i.no} className={`flex-shrink-0 w-full flex ${i.no === 2 ? "flex-col-reverse" : "flex-col"} items-center gap-8 justify-center px-8 transition-opacity duration-700 ease-in-out ${progressBar === i.no ? "opacity-100" : "opacity-0"}`}>
                             <span className="flex flex-col gap-1 text-center">
                                 <h1 className="font-bold">{i.h1}</h1>
-                                <p className="text-stone-400">{i.p}</p>
+                                <p className="text-stone-400 text-sm">{i.p}</p>
                             </span>
                             {i.image && (
                                 <Image
@@ -83,21 +149,28 @@ const SplashOnboarding = () => {
                             )}
 
                             {i.no === 3 && (
-                                <RegisterPage
-                                    username={username}
-                                    setUsername={setUsername}
-                                    email={email}
-                                    setEmail={setEmail}
-                                    grade={grade}
-                                    setGrade={setGrade}
-                                    password={password}
-                                    setPassword={setPassword}
-                                />
-                                // <div className="w-full h-full flex flex-col gap-4">
-                                //     <input type="text" className="bg-stone-100 h-12 rounded-sm px-4 text-sm" placeholder="Nama Kamu" />
-                                //     <input type="text" className="bg-stone-100 h-12 rounded-sm px-4 text-sm" placeholder="kamu@gmail.com" />
-                                //     <input type="text" className="bg-stone-100 h-12 rounded-sm px-4 text-sm" placeholder="••••••••••••" />
-                                // </div>
+                                <>
+                                    {onRegister ? (
+                                        <RegisterPage
+                                            username={username}
+                                            setUsername={setUsername}
+                                            email={email}
+                                            setEmail={setEmail}
+                                            grade={grade}
+                                            setGrade={setGrade}
+                                            password={password}
+                                            setPassword={setPassword}
+                                        />
+                                        // <div className="w-full h-full flex flex-col gap-4">
+                                        //     <input type="text" className="bg-stone-100 h-12 rounded-sm px-4 text-sm" placeholder="Nama Kamu" />
+                                        //     <input type="text" className="bg-stone-100 h-12 rounded-sm px-4 text-sm" placeholder="kamu@gmail.com" />
+                                        //     <input type="text" className="bg-stone-100 h-12 rounded-sm px-4 text-sm" placeholder="••••••••••••" />
+                                        // </div>
+
+                                    ) : (
+                                        <LoginPage />
+                                    )}
+                                </>
                             )}
                         </span>
                     ))}

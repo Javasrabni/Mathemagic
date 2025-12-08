@@ -7,13 +7,13 @@ export async function POST(req: Request) {
   try {
     await connectDB()
     const { username, email, password, grade } = await req.json();
-    if (!username || !email || !grade || !password) {
+    if (!username || !email || !password) {
       return NextResponse.json({success: false, message: "Username / Email / Password / Kelas tidak boleh kosong."},{ status: 400 });
     }
 
     const check = await userAccount.findOne({email})
     if(check) {
-        return NextResponse.json({message: "Email telah terdaftar!"})
+        return NextResponse.json({EmailMessage: "Email telah terdaftar!", success: false},{status: 500})
     }
 
     // const hashedPassword = await bcrypt.hash(password, 10)
