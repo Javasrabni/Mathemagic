@@ -1,26 +1,25 @@
-// /api/refresh.ts
-import { SignJWT, jwtVerify } from "jose";
 import { NextResponse } from "next/server";
+import { SignJWT, jwtVerify } from "jose";
 
 export async function POST(req: Request) {
+  const cookie = req.headers.get("cookie");
+  const refresh_token = cookie?.split("refresh_token=")[1]?.split(";")[0];
+
+  if (!refresh_token)
+    return NextResponse.json({ message: "No refresh" }, { status: 401 });
+
+  const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
+
   try {
-    const cookieHeader = req.headers.get("cookie") || "";
-    const cookies = Object.fromEntries(cookieHeader.split("; ").map(c => c.split("=")));
-    const refreshToken = cookies.refreshToken;
+    const { payload } = await jwtVerify(refresh_token, secret);
 
-    if (!refreshToken) return NextResponse.json({ success: false, message: "No refresh token" }, { status: 401 });
-
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
-    const payload = await jwtVerify(refreshToken, secret);
-
-    // generate new access token
-    const accessToken = await new SignJWT({ id: payload.payload.id })
+    const newAccess = await new SignJWT({ id: payload.id, email: payload.email })
       .setProtectedHeader({ alg: "HS256" })
-      .setExpirationTime("1d")
+      .setExpirationTime("15m")
       .sign(secret);
 
-    return NextResponse.json({ success: true, accessToken });
-  } catch (err) {
-    return NextResponse.json({ success: false, message: "Invalid token" }, { status: 401 });
+    return NextResponse.json({ accessToken: newAccess });
+  } catch {
+    return NextResponse.json({ message: "Invalid refresh" }, { status: 401 });
   }
 }

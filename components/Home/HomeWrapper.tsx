@@ -1,7 +1,8 @@
 'use client'
 import { useEffect, useState } from "react";
-import { getToken, setToken } from "@/utils/token";
 import { useRouter } from "next/navigation";
+import { getToken, setToken } from "@/utils/authStorage";
+
 import SplashOnboarding from "@/components/splashOrOnboardingScreen/splashOnboarding";
 
 export default function HomeWrapper() {

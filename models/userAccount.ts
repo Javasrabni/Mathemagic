@@ -20,7 +20,7 @@ const userAccounts = new mongoose.Schema({
     }, grade: {
         type: String,
         // required: true,
-        default: '7'
+        default: 'Kelas 7'
     }, avatar: {
         type: String,
         default: ''

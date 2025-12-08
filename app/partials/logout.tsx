@@ -1,4 +1,4 @@
-import { removeToken } from "@/utils/storage";
+import { removeToken } from "@/utils/authStorage";
 import { useRouter } from "next/navigation";
 
 const router = useRouter();

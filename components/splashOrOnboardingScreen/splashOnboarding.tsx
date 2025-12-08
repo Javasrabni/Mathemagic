@@ -7,7 +7,8 @@ import RegisterPage from "../auth/register/registerPage"
 import LoginPage from "../auth/login/loginPage"
 import { useUser } from "@/context/userDataCookie"
 import { useRouter } from "next/navigation"
-import { setToken } from "@/utils/storage"
+import { setToken } from "@/utils/authStorage";
+// import { SecureStoragePlugin } from "@aparajita/capacitor-secure-storage"
 
 const SplashOnboarding = () => {
     const router = useRouter()
@@ -17,7 +18,7 @@ const SplashOnboarding = () => {
     // USER REGISTER!!!!
     const [username, setUsername] = useState("")
     const [email, setEmail] = useState("")
-    const [grade, setGrade] = useState("")
+    const [grade, setGrade] = useState("Kelas 7")
     const [password, setPassword] = useState("")
 
     // USER LOGIN
@@ -135,8 +136,8 @@ const SplashOnboarding = () => {
                 setEmail("")
                 setPassword("")
 
-                if(data.accessToken) {
-                    await setToken(data.accessToken)
+                if(data.success) {
+                    await setToken(data.accessToken);
                 }
                 refreshUser()
                 router.push("/dashboard")
