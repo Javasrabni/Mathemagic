@@ -115,7 +115,7 @@ const SplashOnboarding = () => {
 
     const OnBoardingData = [
         { no: 1, h1: "Mathemagic", p: 'Belajar matematika Sekolah Menengah Pertama (SMP) menyenangkan bersama Mathemagic!', image: '/Assets/OnBoarding/boarding1.png' },
-        { no: 2, h1: "Siap untuk belajar?", p: 'Kita akan belajar matematika dengan mudah, seru, dan lengap!', image: '/Assets/OnBoarding/boarding2.png' },
+        { no: 2, h1: "Siap untuk belajar?", p: 'Kita akan belajar matematika dengan mudah, seru, dan lengkap!', image: '/Assets/OnBoarding/boarding2.png' },
         { no: 3, h1: "Kita buat akun terlebih dahulu yuk!", p: 'Kami butuh informasi tentang kamu', image: '' },
     ]
 
