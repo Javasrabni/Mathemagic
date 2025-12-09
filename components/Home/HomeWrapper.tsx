@@ -1,39 +1,49 @@
-'use client'
-import { useEffect, useState } from "react";
-import { getToken, setToken } from "@/utils/token";
-import { useRouter } from "next/navigation";
+"use client";
+
 import SplashOnboarding from "@/components/splashOrOnboardingScreen/splashOnboarding";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { getToken, setToken } from "@/utils/authStorage";
 
 export default function HomeWrapper() {
-  const router = useRouter();
-  const [loading, setLoading] = useState(true);
+    const router = useRouter();
 
-  useEffect(() => {
-    const checkLogin = async () => {
-      let token = await getToken();
+    useEffect(() => {
+        const checkLogin = async () => {
+            // 1. Cek token lokal dulu (sangat cepat ±1ms)
+            const accessToken = await getToken();
 
-      if (!token) {
-        // coba refresh token dari cookie httpOnly
-        const res = await fetch("/api/refresh", { method: "POST", credentials: "include" });
-        const data = await res.json();
-        if (res.ok && data.accessToken) {
-          token = data.accessToken;
-          if(token) await setToken(token);
-        }
-      }
+            if (accessToken) {
+                router.replace("/dashboard");
+                return;
+            }
 
-      if (token) router.replace("/dashboard");
-      else setLoading(false);
-    };
+            // 2. Refresh token, dilakukan di background
+            try {
+                const res = await fetch("/api/refresh", {
+                    method: "POST",
+                    credentials: "include",
+                });
 
-    checkLogin();
-  }, [router]);
+                const data = await res.json();
 
-  if (loading) return <p>Load..</p>;
+                if (data?.accessToken) {
+                    await setToken(data.accessToken);
+                    router.replace("/dashboard");
+                }
+            } catch (err) {
+                console.error("Refresh failed:", err);
+            }
+        };
 
-  return (
-    <div className="p-8 relative">
-      <SplashOnboarding />
-    </div>
-  );
+        // *Jalankan setelah 10–80ms supaya UI tampil dulu*
+        setTimeout(checkLogin, 50);
+    }, [router]);
+
+    // UI langsung tampil tanpa delay
+    return (
+        <div className="p-8 relative">
+            <SplashOnboarding />
+        </div>
+    );
 }
