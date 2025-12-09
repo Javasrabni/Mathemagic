@@ -1,16 +1,12 @@
 
 import SignedPage from "@/components/signedPage/SignedPage";
-import Footer from "../partials/footer";
-import Navbar from "../partials/navbar";
 
 export default function Dashboard() {
     return (
-        <div className="w-full h-screen flex flex-col items-center justify-between">
-            <Navbar />
-            <div className="w-full h-full p-6">
+        <div className="w-full h-full flex flex-col items-center justify-between">
+            <div className="w-full h-full">
                 <SignedPage />
             </div>
-            <Footer />
         </div>
     )
 }
