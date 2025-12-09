@@ -1,49 +1,47 @@
 "use client";
-
-import SplashOnboarding from "@/components/splashOrOnboardingScreen/splashOnboarding";
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import SplashOnboarding from "@/components/splashOrOnboardingScreen/splashOnboarding";
 import { getToken, setToken } from "@/utils/authStorage";
 
 export default function HomeWrapper() {
-    const router = useRouter();
+  const router = useRouter();
 
-    useEffect(() => {
-        const checkLogin = async () => {
-            // 1. Cek token lokal dulu (sangat cepat ±1ms)
-            const accessToken = await getToken();
+  useEffect(() => {
+    const checkLogin = async () => {
+      // 1. Cek token lokal dulu
+      const accessToken = await getToken();
+      if (accessToken) {
+        router.replace("/dashboard");
+        return;
+      }
 
-            if (accessToken) {
-                router.replace("/dashboard");
-                return;
-            }
+      // 2. Cek refresh token ke server publik (harus pakai URL full)
+      try {
+        const res = await fetch("https://school-learning-app.vercel.app/api/refresh", {
+          method: "POST",
+          credentials: "include",
+        });
+        const data = await res.json();
 
-            // 2. Refresh token, dilakukan di background
-            try {
-                const res = await fetch("/api/refresh", {
-                    method: "POST",
-                    credentials: "include",
-                });
+        if (data?.accessToken) {
+          await setToken(data.accessToken);
+          router.replace("/dashboard");
+        }
+      } catch (err) {
+        console.error("Refresh token failed:", err);
+      }
+    };
 
-                const data = await res.json();
+    // Jalankan sedikit delay supaya UI muncul dulu
+    const timer = setTimeout(checkLogin, 50);
+    return () => clearTimeout(timer);
+  }, [router]);
 
-                if (data?.accessToken) {
-                    await setToken(data.accessToken);
-                    router.replace("/dashboard");
-                }
-            } catch (err) {
-                console.error("Refresh failed:", err);
-            }
-        };
-
-        // *Jalankan setelah 10–80ms supaya UI tampil dulu*
-        setTimeout(checkLogin, 50);
-    }, [router]);
-
-    // UI langsung tampil tanpa delay
-    return (
-        <div className="p-8 relative">
-            <SplashOnboarding />
-        </div>
-    );
+  // UI langsung tampil tanpa delay
+  return (
+    <div className="p-8 relative">
+      <SplashOnboarding />
+    </div>
+  );
 }
