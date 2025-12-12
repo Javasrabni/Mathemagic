@@ -4,8 +4,11 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useUser } from "@/context/userDataCookie";
 import { SearchIcon, SettingsIcon, TrophyIcon } from "lucide-react";
-import Image from "next/image";
+// import Image from "next/image";
+import { Swiper } from "swiper/react";
+import 'swiper/css'
 import Link from "next/link";
+import Carousel from "../carousel/carousel";
 
 type ProgressType = {
     materialTitle: string;
@@ -54,7 +57,7 @@ export default function SignedPage() {
             transition={{ duration: 0.4 }}
         >
             {/* Greeting — TAMPIL LANGSUNG (tidak perlu data API) */}
-            <div className="bg-[var(--accentColor)] w-full h-full flex justify-between flex-col pt-8 pb-6 px-6 gap-4">
+            <div className="bg-[var(--accentColor)] w-full h-full flex justify-between flex-col pt-8 pb-4 px-6 gap-4">
                 <div className="w-full h-full flex flex-row justify-between items-center gap-0">
                     <div>
                         <h1 className="font-bold text-lg text-white">
@@ -62,19 +65,29 @@ export default function SignedPage() {
                         </h1>
                         <p className="text-sm text-gray-300">Siap belajar hari ini?</p>
                     </div>
-                    <Link href={'/dashboard/profil'} className="w-12 h-12 ">
-                        <img src={user?.avatar || '/Assets/onPage/defaultProfile.png'} alt="" width={'100%'} className="outline-1 outline-gray-400 rounded-full object-cover"/>
-                    </Link>
+                    <div className="w-fit h-full flex flex-row gap-3 items-center">
+                        <p className="text-xs text-gray-300">{user?.points ?? '0'} points</p>
+                        <Link href={'/dashboard/profil'} className="w-12 h-12 outline-1 outline-gray-400 rounded-full translate-x-[-2px]">
+                            <img src={user?.avatar || '/Assets/onPage/defaultProfile.png'} alt="" width={'100%'} className=" rounded-full object-cover scale-[135%]" />
+                        </Link>
+                    </div>
                 </div>
-                <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center justify-between gap-3">
                     <div className="w-full h-full flex items-center gap-4 bg-gray-100 rounded-lg px-4">
-                        <SearchIcon width={16} className="text-gray-400" />
+                        <SearchIcon width={20} className="text-gray-400" />
                         <input type="text" className="w-full h-13 outline-none border-none text-sm" placeholder="Cari materi" />
                     </div>
                     <div className="shrink-0 w-13 h-13 rounded-lg flex items-center justify-center bg-white">
-                        <SettingsIcon width={16} className="text-gray-400" />
+                        <SettingsIcon width={20} className="text-gray-400" />
                     </div>
                 </div>
+            </div>
+
+            {/* ============================
+                    CARAOUSEL
+                ============================ */}
+            <div className="h-52 w-full pb-8 px-6 mt-8">
+                <Carousel images={["/Assets/carousel/kelas7_cr.png", "/Assets/carousel/kelas8_cr.png", "/Assets/carousel/kelas9_cr.png"]}/>
             </div>
 
             {/* ============================
@@ -126,7 +139,7 @@ export default function SignedPage() {
                                     <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden">
                                         <img
                                             src={u.avatar || "/Assets/onPage/defaultProfile.png"}
-                                            className="w-full h-full object-cover"
+                                            className="w-full h-full object-cover scale-[135%]"
                                         />
                                     </div>
                                     <span className="font-medium">{u.username}</span>

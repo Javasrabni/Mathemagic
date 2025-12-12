@@ -71,7 +71,7 @@ export default function ProfileClient() {
               ) : (
                 <img
                   src={user?.avatar || "/Assets/onPage/defaultProfile.png"}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover scale-[135%]"
                   alt=""
                 />
               )}
