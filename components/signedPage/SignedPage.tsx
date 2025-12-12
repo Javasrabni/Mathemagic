@@ -65,10 +65,10 @@ export default function SignedPage() {
                         </h1>
                         <p className="text-sm text-gray-300">Siap belajar hari ini?</p>
                     </div>
-                    <div className="w-fit h-full flex flex-row gap-3 items-center">
+                    <div className="w-fit h-full flex flex-row gap-3 items-center shrink-0">
                         <p className="text-xs text-gray-300">{user?.points ?? '0'} points</p>
                         <Link href={'/dashboard/profil'} className="w-12 h-12 outline-1 outline-gray-400 rounded-full translate-x-[-2px]">
-                            <img src={user?.avatar || '/Assets/onPage/defaultProfile.png'} alt="" width={'100%'} className=" rounded-full object-cover scale-[135%]" />
+                            <img src={user?.avatar || '/Assets/onPage/defaultProfile.png'} alt="" width={'100%'} className={` rounded-full object-cover ${!user?.avatar && 'scale-[135%]'}`} />
                         </Link>
                     </div>
                 </div>

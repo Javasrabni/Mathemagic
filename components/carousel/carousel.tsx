@@ -24,7 +24,7 @@ export default function Carousel({ images }: Props) {
           el: ".custom-pagination",
           clickable: true,
         }}
-        className="h-full outline-1 outline-[var(--accentColor)] rounded-xl"
+        className="h-full rounded-xl"
       >
         {images.map((img, idx) => (
           <SwiperSlide key={idx}>
@@ -38,7 +38,7 @@ export default function Carousel({ images }: Props) {
               {/* GRADIENT OVERLAY */}
               <div
                 className="absolute bottom-0 left-0 right-0 h-32 
-                  bg-gradient-to-t from-[var(--accentColor)]/100 via-[var(--accentColor)]/40 to-transparent 
+                  bg-gradient-to-t from-[var(--accentColor)]/60 via-[var(--accentColor)]/20 to-transparent 
                   rounded-b-xl pointer-events-none"
               ></div>
             </div>
