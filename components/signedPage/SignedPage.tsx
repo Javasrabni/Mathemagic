@@ -54,7 +54,7 @@ export default function SignedPage() {
 
 
 
-    const trophyColors = ['text-yellow-500', 'text-gray-400', 'text-amber-700'];
+    const trophyColors = ['text-yellow-500', 'text-gray-500', 'text-amber-700'];
 
     // GET MATERI MTK
     const [materiMTK, setMateriMTK] = useState<Material[]>([])
@@ -99,18 +99,18 @@ export default function SignedPage() {
                 {/* SEARCH INPUT N SETTING */}
                 <div className="flex items-center justify-between gap-3">
                     <div className="w-full h-full flex items-center gap-4 bg-white rounded-lg px-4">
-                        <SearchIcon width={16} className="text-gray-400" />
+                        <SearchIcon width={16} className="text-gray-500" />
                         <input type="text" className="w-full h-10 outline-none border-none text-xs" placeholder="Cari materi" />
                     </div>
                     <div className="shrink-0 w-10 h-10 rounded-lg flex items-center justify-center bg-white">
-                        <SettingsIcon width={16} className="text-gray-400" />
+                        <SettingsIcon width={16} className="text-gray-500" />
                     </div>
                 </div>
 
             </div>
 
             {/* BODY SECTION */}
-            <div className="w-full pb-24 space-y-8 bg-white rounded-t-4xl mt-[-42px]" >
+            <div className="w-full pb-24 space-y-6 bg-white rounded-t-4xl mt-[-42px]" >
 
                 {/* CARAOUSEL (SECTION) */}
                 <div className="h-48 w-full pb-8 px-6 mt-6 relative">
@@ -129,6 +129,10 @@ export default function SignedPage() {
                     <Carousel images={["/Assets/carousel/kelas7_cr.png", "/Assets/carousel/kelas8_cr.png", "/Assets/carousel/kelas9_cr.png"]} />
                 </div>
 
+                {/* <div className={`bg-gray-100 px-6 py-2 shrink-0 rounded-full border-1 ${idx <= 1 ? ' border-blue-200' : idx === 2 ? 'border-orange-200' : 'border-red-200'}`}>
+                                <p className="text-xs font-[urbanist] font-bold">{i.title}</p>
+                            </div> */}
+
                 {/* MULAI DARI DASAR (SECTION) */}
                 <div className="flex flex-col gap-4">
                     <div className="px-6 flex flex-col gap-1">
@@ -136,14 +140,51 @@ export default function SignedPage() {
                             <SigmaSquareIcon width={16} />
                             <h1 className="text-base font-semibold font-[poppins]"> Mulai dari dasar</h1>
                         </span>
-                        <p className="text-xs text-stone-400">Sebagai pondasi awal pemahaman matematika tingkat lanjut.</p>
+                        <p className="text-xs text-gray-500">Sebagai pondasi awal pemahaman matematika tingkat lanjut.</p>
                     </div>
-                    <div className="w-full flex flex-row gap-2 items-center overflow-x-auto pb-4 px-6 no-scrollbar">
-                        {materiMTK.filter(i => i.class === 7).slice(0, 4).map((i, idx) => (
-                            <div className={`bg-gray-100 px-6 py-2 shrink-0 rounded-full border-1 ${idx <= 1 ? ' border-blue-200' : idx === 2 ? 'border-orange-200' : 'border-red-200'}`}>
-                                <p className="text-xs font-[urbanist] font-bold">{i.title}</p>
-                            </div>
-                        ))}
+                    <div className="w-full flex flex-col gap-1 overflow-x-auto px-6 no-scrollbar">
+                        <div className="relative flex items-start justify-between mt-3  mb-6 w-[50%] translate-x-[-35px]">
+                            {materiMTK
+                                .filter(i => i.class === 7)
+                                .slice(0, 4)
+                                .map((i, idx, arr) => (
+                                    <div key={idx} className="flex flex-col items-center w-full relative shrink-0">
+
+                                        {/* Garis */}
+                                        {idx !== arr.length - 1 && (
+                                            <div className="absolute top-[2.7px] left-1/2 w-full h-[2px] bg-gray-300" />
+                                        )}
+
+                                        {/* Dot */}
+                                        <span className="relative flex items-center justify-center">
+                                            <span
+                                                className="absolute inline-flex h-4 w-4 rounded-full 
+                     bg-blue-400/30 ease-in-out animate-ping"
+                                                style={{
+                                                    animationDelay: `${idx * 0.6}s`,
+                                                    animationDuration: `${arr.length * 0.5}s`,
+                                                }}
+                                            />
+                                            <span className="relative z-10 w-2 h-2 bg-blue-500 rounded-full" />
+                                        </span>
+
+                                        {/* Konten */}
+                                        <div className="mt-3 text-center w-full space-y-[2px]">
+                                            <span>
+
+                                                <p className="text-xs font-bold font-[urbanist]">{i.title}</p>
+                                            </span>
+                                            <p className="text-xs font-[inter] text-gray-500 ">
+                                                {i.subTopics.length} Materi
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
+                        </div>
+
+
+
+
                     </div>
                 </div>
 
