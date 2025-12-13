@@ -20,7 +20,7 @@ export default function Carousel({ images }: Props) {
         slidesPerView={1}
         spaceBetween={8}
         loop={true}
-        autoplay={{ delay: 2000 }}
+        autoplay={{ delay: 2500 }}
         pagination={{
           el: ".custom-pagination",
           clickable: true,

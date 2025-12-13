@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useUser } from "@/context/userDataCookie";
-import { BellIcon, PlayIcon, SearchIcon, SettingsIcon, SigmaSquareIcon, TrophyIcon } from "lucide-react";
+import { BellIcon, ChartSplineIcon, CornerDownRightIcon, PlayIcon, SearchIcon, SettingsIcon, SigmaSquareIcon, SquareFunctionIcon, TrophyIcon } from "lucide-react";
 // import Image from "next/image";
 import Link from "next/link";
 import Carousel from "../carousel/carousel";
@@ -11,6 +11,7 @@ import Carousel from "../carousel/carousel";
 import Image from "next/image";
 import { WaypointsIcon } from "lucide-react";
 import { fadeUp } from "@/app/dashboard/progress/page";
+import Leaderboard from "../Leaderboard";
 
 type Material = {
     _id: string;
@@ -43,7 +44,7 @@ export default function SignedPage() {
 
         fetch("/api/leaderboard")
             .then((res) => res.json())
-            .then((data) => setLeaders(data.slice(0, 3)))
+            .then((data) => setLeaders(data))
             .catch(() => setLeaders([]));
     }, [user]);
 
@@ -77,7 +78,7 @@ export default function SignedPage() {
     return (
         <div className="flex flex-col gap-0">
             {/* Greeting — TAMPIL LANGSUNG (tidak perlu data API) */}
-            <div className="bg-[var(--accentColor)] w-full h-full flex justify-between flex-col pt-8 pb-16 px-6 gap-4">
+            <div className="bg-[var(--accentColor)] w-full h-full flex justify-between flex-col pt-8 pb-16 px-6 gap-6">
 
                 {/* GREETING N PHOTO PROFILE */}
                 <div className="w-full h-full flex flex-row justify-between items-center gap-0">
@@ -110,31 +111,35 @@ export default function SignedPage() {
             </div>
 
             {/* BODY SECTION */}
-            <div className="w-full pb-24 space-y-6 bg-white rounded-t-4xl mt-[-42px]" >
+            <div className="w-full space-y-2 bg-stone-100 rounded-t-4xl relative top-[-2.5rem]" >
 
-                {/* CARAOUSEL (SECTION) */}
-                <div className="h-48 w-full pb-8 px-6 mt-6 relative">
 
-                    <div className="absolute top-3 left-[50%] translate-x-[-50%] z-30 text-white">
-                        <p className={'text-xs font-bold font-[urbanist]'}>Mathemagic</p>
-                    </div>
-
-                    <div className="absolute bottom-12 left-[50%] translate-x-[-50%] z-30 text-white bg-white px-4 py-[2px] rounded-full">
-                        <span className="flex flex-row gap-2 items-center">
-                            <PlayIcon width={12} fill="var(--accentColor)" className="text-[var(--accentColor)]" />
-                            <p className="text-xs text-black font-[inter]">Mulai</p>
-                        </span>
-
-                    </div>
-                    <Carousel images={["/Assets/carousel/kelas7_cr.png", "/Assets/carousel/kelas8_cr.png", "/Assets/carousel/kelas9_cr.png"]} />
-                </div>
 
                 {/* <div className={`bg-gray-100 px-6 py-2 shrink-0 rounded-full border-1 ${idx <= 1 ? ' border-blue-200' : idx === 2 ? 'border-orange-200' : 'border-red-200'}`}>
                                 <p className="text-xs font-[urbanist] font-bold">{i.title}</p>
                             </div> */}
 
                 {/* MULAI DARI DASAR (SECTION) */}
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col pb-6 gap-4 bg-white rounded-t-4xl">
+                    {/* CARAOUSEL (SECTION) */}
+                    <div className="h-48 w-full pb-8 px-6 mt-6 bg-white relative">
+
+                        <div className="absolute bottom-11 left-0 z-30 text-white flex items-center justify-around w-full">
+                            <SquareFunctionIcon width={16} className="opacity-50" />
+                            <p className={'text-xs font-bold font-[urbanist]'}>Mathemagic</p>
+                            <ChartSplineIcon width={16} className="opacity-50" />
+                        </div>
+
+                        {/* <div className="absolute bottom-12 left-[50%] translate-x-[-50%] z-30 text-white bg-white px-4 py-[2px] rounded-full">
+                            <span className="flex flex-row gap-2 items-center">
+                                <PlayIcon width={12} fill="#2b7fff" className="text-blue-500" />
+                                <p className="text-xs text-black font-[inter]">Mulai</p>
+                            </span>
+
+                        </div> */}
+                        <Carousel images={["/Assets/carousel/kelas7_cr.png", "/Assets/carousel/kelas8_cr.png", "/Assets/carousel/kelas9_cr.png"]} />
+                    </div>
+
                     <div className="px-6 flex flex-col gap-1">
                         <span className="flex flex-row gap-2 items-center">
                             <SigmaSquareIcon width={16} />
@@ -178,6 +183,13 @@ export default function SignedPage() {
                                                 {i.subTopics.length} Materi
                                             </p>
                                         </div>
+                                        <Link href={'/'} className="text-xs font-[urbanist] bg-blue-500 px-4 py-[2px] rounded-full text-white font-semibold mt-2">
+                                            <span className="flex items-center space-x-2 ">
+                                                <CornerDownRightIcon width={12} />
+                                                <p>Buka</p>
+                                            </span>
+
+                                        </Link>
                                     </div>
                                 ))}
                         </div>
@@ -189,14 +201,14 @@ export default function SignedPage() {
                 </div>
 
                 {/* LIST MATERI KELAS 7-9 (SECTION) */}
-                <div className="w-full px-6 space-y-6">
+                <div className="w-full px-6 space-y-6 bg-white py-6">
                     {/* Title */}
                     <motion.div {...fadeUp} className="flex flex-col gap-1">
                         <span className="flex flex-row gap-2 items-center">
                             <WaypointsIcon width={16} />
                             <h1 className="text-base font-semibold font-[poppins]">Silabus dan materi belajar</h1>
                         </span>
-                        <p className="text-xs text-stone-400">
+                        <p className="text-xs text-stone-500">
                             Mulai belajar matematika sesuai dengan tingkatan kamu, mulai dari kelas 7 - 9.
                         </p>
                     </motion.div>
@@ -229,8 +241,11 @@ export default function SignedPage() {
 
 
                 {/* LEADERBOARD — ADA SKELETON */}
-                <div className="bg-white rounded-xl p-4 shadow-sm mx-6">
-                    <h2 className="font-semibold text-lg mb-3">Leaderboard</h2>
+                <div className="bg-white p-6 h-full w-full space-y-6">
+                    <span className="flex space-x-2 items-center">
+                        <TrophyIcon width={16} />
+                        <h2 className="font-semibold text-sm">Leaderboard</h2>
+                    </span>
 
                     {leaders === null ? (
                         <div className="flex flex-col gap-2">
@@ -241,28 +256,52 @@ export default function SignedPage() {
                     ) : leaders.length === 0 ? (
                         <p className="text-sm text-neutral-500">Belum ada leaderboard.</p>
                     ) : (
-                        <ul className="space-y-3">
-                            {leaders.map((u, i) => (
-                                <li
-                                    key={i}
-                                    className="flex items-center justify-between bg-gray-50 p-3 rounded-md"
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <span key={i} className={`font-bold ${trophyColors[i] || 'text-blue-600'}`}>
-                                            {i + 1}
-                                        </span>
-                                        <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden">
+                        <div className="w-full flex flex-col space-y-6">
+                            <div className="space-x-2 flex flex-row w-full h-full items-end">
+                                {[1, 0, 2].map((cls) => {
+                                    const render = leaders[cls]
+                                    return (
+                                        <div className="flex flex-col w-full space-y-4 items-center justify-center">
+                                            <div className="flex items-center justify-center flex-col gap-2">
+                                                <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden shrink-0">
+                                                    <img
+                                                        src={render.avatar || "/Assets/onPage/defaultProfile.png"}
+                                                        className="w-full h-full object-cover scale-[135%]"
+                                                    />
+                                                </div>
+                                                <span className="gap-[2px] flex flex-col items-center justify-center">
+                                                    <h1 className="text-center font-medium text-sm font-[poppins]">{render.username}</h1>
+                                                    <p className="text-xs text-gray-500 font-semibold font-[urbanist]">{render.points} poin</p>
+                                                </span>
+                                            </div>
+                                            <div key={cls} className={`w-full flex flex-col items-center justify-start bg-gray-100 p-4 rounded-t-lg ${cls === 0 ? "h-39" : cls === 1 ? 'h-26' : 'h-13'}`}>
+                                                <span className={`font-bold ${trophyColors[cls] || 'text-blue-600'}`}>
+                                                    {cls + 1}
+                                                </span>
+                                            </div>
+
+                                        </div>
+                                    )
+                                })}
+                            </div>
+
+                            <div className="flex flex-col gap-4">
+                                {/* <p className="text-sm font-[poppins]">Semua pengguna</p> */}
+                                {leaders.slice(3).map((i, idx) =>
+                                    <div key={idx} className="flex flex-row w-full space-x-4 items-center">
+                                        <p className="text-sm font-bold">{idx + 4}</p>
+                                        <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden shrink-0">
                                             <img
-                                                src={u.avatar || "/Assets/onPage/defaultProfile.png"}
+                                                src={i.avatar || "/Assets/onPage/defaultProfile.png"}
                                                 className="w-full h-full object-cover scale-[135%]"
                                             />
                                         </div>
-                                        <span className="font-medium">{u.username}</span>
+                                        <h1 className="text-center text-xs font-[poppins]">{i.username}</h1>
+                                        <p className="text-xs text-gray-500 font-semibold font-[urbanist]">{i.points} poin</p>
                                     </div>
-                                    <span className="text-sm text-gray-500">{u.points} poin</span>
-                                </li>
-                            ))}
-                        </ul>
+                                )}
+                            </div>
+                        </div>
                     )}
                 </div>
 
