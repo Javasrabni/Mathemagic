@@ -45,7 +45,7 @@ const FooterClient = () => {
     return (
         <div
             ref={containerRef}
-            className='fixed bottom-0 left-0 bg-white w-full h-14 flex flex-row items-center justify-around px-8 border-t border-stone-200'
+            className='fixed bottom-0 left-0 bg-white w-full h-14 flex flex-row items-center justify-around px-8 border-t border-stone-200 z-999'
         >
             {/* HIGHLIGHT ANIMASI */}
             <div

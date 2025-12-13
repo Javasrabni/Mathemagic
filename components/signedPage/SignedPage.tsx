@@ -140,13 +140,13 @@ export default function SignedPage() {
                         <Carousel images={["/Assets/carousel/kelas7_cr.png", "/Assets/carousel/kelas8_cr.png", "/Assets/carousel/kelas9_cr.png"]} />
                     </div>
 
-                    <div className="px-6 flex flex-col gap-1">
+                    <motion.div {...fadeUp}  className="px-6 flex flex-col gap-1">
                         <span className="flex flex-row gap-2 items-center">
                             <SigmaSquareIcon width={16} />
                             <h1 className="text-base font-semibold font-[poppins]"> Mulai dari dasar</h1>
                         </span>
                         <p className="text-xs text-gray-500">Sebagai pondasi awal pemahaman matematika tingkat lanjut.</p>
-                    </div>
+                    </motion.div>
                     <div className="w-full flex flex-col gap-1 overflow-x-auto px-6 no-scrollbar">
                         <div className="relative flex items-start justify-between mt-3  mb-6 w-[50%] translate-x-[-35px]">
                             {materiMTK
