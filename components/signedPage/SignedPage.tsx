@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useUser } from "@/context/userDataCookie";
-import { BellIcon, ChartSplineIcon, CornerDownRightIcon, PlayIcon, SearchIcon, SettingsIcon, SigmaSquareIcon, SparklesIcon, SquareFunctionIcon, TrophyIcon } from "lucide-react";
+import { BellIcon, ChartSplineIcon, CornerDownRightIcon, PlayIcon, RefreshCwIcon, SearchIcon, SettingsIcon, SigmaSquareIcon, SparklesIcon, SquareFunctionIcon, TrophyIcon } from "lucide-react";
 // import Image from "next/image";
 import Link from "next/link";
 import Carousel from "../carousel/carousel";
@@ -12,6 +12,8 @@ import Image from "next/image";
 import { WaypointsIcon } from "lucide-react";
 import { fadeUp } from "@/app/dashboard/progress/page";
 import Leaderboard from "../Leaderboard";
+import Spinner from "../loadSpinner/loadSpinner";
+import OpenListMateri from "../detailMateri/detailMateri";
 type Quiz = {
     question: string;
     options: string[];
@@ -85,10 +87,62 @@ export default function SignedPage() {
         { no: 5, title: "Perbandingan", link: '' },
     ]
 
+    // REFRESH LEADERBOARD
+    const [loading, setLoading] = useState(false)
+    async function RefreshLeaderboard() {
+        try {
+            setLoading(true)
+            const res = await fetch('/api/leaderboard')
+            const data = await res.json()
+            if (res.ok) {
+                setLeaders(data)
+            } else {
+                setLeaders([])
+            }
+        } catch (error) {
+            console.error(error)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    // OPEN LIST MATERI BTN
+    const [openListMateri, setOpenListMateri] = useState(false)
+    const [getListMateriData, setGetListMateriData] = useState<Material[]>([])
+
+    function OpenNGetDataListMateri(data: any) {
+        setOpenListMateri(true)
+        setGetListMateriData(data)
+    }
+
     return (
         <div className="flex flex-col gap-0">
+
+
+
             {/* Greeting — TAMPIL LANGSUNG (tidak perlu data API) */}
             <div className="bg-[var(--accentColor)] w-full h-full flex justify-between flex-col pt-8 pb-16 px-6 gap-6">
+
+                {/* OPEN LIST MATER */}
+                <div className={`fixed top-0 left-0 w-full h-full ${openListMateri ? 'flex z-120' : 'z-[-120]'}`}>
+                    <div className="relative top-0 left-0 z-125 w-full h-full bg-[#00000050]">
+                        <div className="absolute z-73 w-full h-full top-0 left-0 bg-[#00000080]" />
+                        <div className={`w-full h-72 relative`}>
+                            <Image
+                                src={getListMateriData[0]?.class === 7 ? '/Assets/card/card_02.png' : getListMateriData[0]?.class === 8 ? '/Assets/card/card03.png' : '/Assets/card/card04.png'}
+                                alt=""
+                                fill
+                                className="select-none object-cover blur-[3px] scale-[105%]"
+                            />
+                            {getListMateriData[0] && (
+                                <p>{getListMateriData[0].class}</p>
+                            )}
+                        </div>
+
+                    </div>
+                </div>
+
+                <OpenListMateri onOpen={openListMateri} setOnOpen={setOpenListMateri} />
 
                 {/* GREETING N PHOTO PROFILE */}
                 <div className="w-full h-full flex flex-row justify-between items-center gap-0">
@@ -276,14 +330,14 @@ export default function SignedPage() {
 
                                             <div className="w-full flex flex-row justify-between items-center">
                                                 <p className="text-xs text-white/80 text-right font-bold font-[urbanist]">{totalQuiz} Soal</p>
-                                                <Link
-                                                    href="/"
+                                                <button
+                                                    onClick={() => OpenNGetDataListMateri(filtered)}
                                                     className="w-fit px-4 py-1 bg-[var(--accentColor)] rounded-full shadow-md hover:bg-blue-600 transition"
                                                 >
                                                     <p className="text-white font-semibold text-xs font-[urbanist]">
                                                         Mulai Belajar
                                                     </p>
-                                                </Link>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -320,12 +374,18 @@ export default function SignedPage() {
                 {/* LEADERBOARD — ADA SKELETON */}
                 <div className="bg-white p-6 h-full w-full space-y-6">
                     <motion.div {...fadeUp} className="flex flex-col gap-1 pb-4">
-                        <span className="flex flex-row gap-2 items-center">
-                            <TrophyIcon width={16} />
-                            <h1 className="text-base font-semibold font-[poppins]">Leaderboard</h1>
-                        </span>
+                        <div className="flex flex-row items-center gap-4 justify-between">
+                            <span className="flex flex-row gap-2 items-center">
+                                <TrophyIcon width={16} />
+                                <h1 className="text-base font-semibold font-[poppins]">Leaderboard</h1>
+                            </span>
+                            <button className="flex space-x-2 items-center  rounded-md px-2 outline-1 outline-gray-200 cursor-pointer" onClick={RefreshLeaderboard}>
+                                <RefreshCwIcon width={14} />
+                                <p className="text-xs font-semibold font-[urbanist]">Refresh</p>
+                            </button>
+                        </div>
                         <p className="text-xs text-stone-500">
-                            *Dapatkan point dengan mengerjakan soal pada materi pembelajaran.
+                            *Dapatkan poin dengan mengerjakan soal pada materi pembelajaran.
                         </p>
                     </motion.div>
 
@@ -339,57 +399,68 @@ export default function SignedPage() {
                     ) : leaders.length === 0 ? (
                         <p className="text-sm text-neutral-500">Belum ada leaderboard.</p>
                     ) : (
-                        <div className="w-full flex flex-col space-y-6">
-                            <div className="space-x-2 flex flex-row w-full h-full items-end">
-                                {[1, 0, 2].map((cls) => {
-                                    const render = leaders[cls]
-                                    return (
-                                        <div key={cls} className="flex flex-col w-full space-y-4 items-center justify-center">
-                                            <div className="flex items-center justify-center flex-col gap-2">
-                                                <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden shrink-0">
+                        <>
+                            {loading ? (
+                                <div className="w-full h-[320px]">
+                                    <Spinner withBg={false} />
+                                </div>
+                            ) : (
+
+                                <div className="w-full flex flex-col space-y-6">
+                                    <div className="space-x-2 flex flex-row w-full h-full items-end">
+                                        {[1, 0, 2].map((cls) => {
+                                            const render = leaders[cls]
+                                            return (
+                                                <div key={cls} className="flex flex-col w-full space-y-4 items-center justify-center">
+                                                    <div className="flex items-center justify-center flex-col gap-2">
+                                                        <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden shrink-0">
+                                                            <img
+                                                                src={render.avatar || "/Assets/onPage/defaultProfile.png"}
+                                                                className="w-full h-full object-cover scale-[135%]"
+                                                            />
+                                                        </div>
+                                                        <span className="gap-[2px] flex flex-col items-center justify-center">
+                                                            <h1 className="text-center font-medium text-sm font-[poppins]">{render.username}</h1>
+                                                            <p className="text-xs text-gray-500 font-semibold font-[urbanist]">{render.points} poin</p>
+                                                        </span>
+                                                    </div>
+                                                    <div key={cls} className={`w-full flex flex-col items-center justify-start bg-gray-100 p-4 rounded-t-lg ${cls === 0 ? "h-39" : cls === 1 ? 'h-26' : 'h-13'}`}>
+                                                        <span className={`font-bold ${trophyColors[cls] || 'text-blue-600'}`}>
+                                                            {cls + 1}
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+
+                                    <div className="flex flex-col gap-4">
+                                        {/* <p className="text-sm font-[poppins]">Semua pengguna</p> */}
+                                        {leaders.slice(3).map((i, idx) =>
+                                            <div key={idx} className="flex flex-row w-full space-x-4 items-center">
+                                                <p className="text-sm font-bold">{idx + 4}</p>
+                                                <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden shrink-0">
                                                     <img
-                                                        src={render.avatar || "/Assets/onPage/defaultProfile.png"}
+                                                        src={i.avatar || "/Assets/onPage/defaultProfile.png"}
                                                         className="w-full h-full object-cover scale-[135%]"
                                                     />
                                                 </div>
-                                                <span className="gap-[2px] flex flex-col items-center justify-center">
-                                                    <h1 className="text-center font-medium text-sm font-[poppins]">{render.username}</h1>
-                                                    <p className="text-xs text-gray-500 font-semibold font-[urbanist]">{render.points} poin</p>
-                                                </span>
+                                                <h1 className="text-center text-xs font-[poppins]">{i.username}</h1>
+                                                <p className="text-xs text-gray-500 font-semibold font-[urbanist]">{i.points} poin</p>
                                             </div>
-                                            <div key={cls} className={`w-full flex flex-col items-center justify-start bg-gray-100 p-4 rounded-t-lg ${cls === 0 ? "h-39" : cls === 1 ? 'h-26' : 'h-13'}`}>
-                                                <span className={`font-bold ${trophyColors[cls] || 'text-blue-600'}`}>
-                                                    {cls + 1}
-                                                </span>
-                                            </div>
-
-                                        </div>
-                                    )
-                                })}
-                            </div>
-
-                            <div className="flex flex-col gap-4">
-                                {/* <p className="text-sm font-[poppins]">Semua pengguna</p> */}
-                                {leaders.slice(3).map((i, idx) =>
-                                    <div key={idx} className="flex flex-row w-full space-x-4 items-center">
-                                        <p className="text-sm font-bold">{idx + 4}</p>
-                                        <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden shrink-0">
-                                            <img
-                                                src={i.avatar || "/Assets/onPage/defaultProfile.png"}
-                                                className="w-full h-full object-cover scale-[135%]"
-                                            />
-                                        </div>
-                                        <h1 className="text-center text-xs font-[poppins]">{i.username}</h1>
-                                        <p className="text-xs text-gray-500 font-semibold font-[urbanist]">{i.points} poin</p>
+                                        )}
                                     </div>
-                                )}
-                            </div>
-                        </div>
+
+                                </div>
+                            )}
+                        </>
+
                     )}
                 </div>
 
             </  div>
-        </div>
+        </div >
     );
 }
 

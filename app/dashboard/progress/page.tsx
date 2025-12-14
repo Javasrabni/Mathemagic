@@ -25,7 +25,7 @@ export const fadeUp = {
   transition: { duration: 0.35 }
 };
 
-export default function ProgressPage() {
+export default function   ProgressPage() {
   const { user } = useUser();
   const [materials, setMaterials] = useState<Material[]>([]);
   const [progress, setProgress] = useState<ProgressType[]>([]);

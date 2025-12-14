@@ -182,7 +182,7 @@ const SplashOnboarding = () => {
         <div className={`absolute flex flex-col items-center justify-between py-8 inset-0 top-0 h-screen w-full bg-white ${user ? "opacity-0 left-[-32rem]" : "opacity-100 left-0 "} `}>
             {loadingAuth && (
                 <div className='absolute top-0 left-0 w-full h-full z-20'>
-                    <Spinner />
+                    <Spinner withBg />
                 </div>
             )}
             {/* Container slider */}
