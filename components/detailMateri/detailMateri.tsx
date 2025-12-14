@@ -1,17 +1,19 @@
 "use client";
 
 import React, { useRef } from "react";
-import ProgressPage from "@/app/dashboard/progress/page";
+import ProgressPage, { Material } from "@/app/dashboard/progress/page";
 
 interface Props {
   onOpen: boolean;
   setOnOpen: (v: boolean) => void;
+  onData: Material[],
+  indexMateri: number | null
 }
 
 const OPEN_Y = 30; // 60% terlihat
 const CLOSE_THRESHOLD = 120;
 
-export default function OpenListMateri({ onOpen, setOnOpen }: Props) {
+export default function OpenListMateri({ onOpen, setOnOpen, onData, indexMateri }: Props) {
   const sheetRef = useRef<HTMLDivElement>(null);
   const startY = useRef(0);
   const lastDiff = useRef(0);
@@ -80,8 +82,8 @@ export default function OpenListMateri({ onOpen, setOnOpen }: Props) {
       </div>
 
       {/* CONTENT */}
-      <div className="h-[calc(100%-56px)] overflow-y-auto overscroll-contain px-4 pb-10">
-        <ProgressPage />
+      <div className="h-[calc(70%-56px)] overflow-y-auto overscroll-contain px-6 pb-16">
+        <ProgressPage onData={onData} index={indexMateri} />
       </div>
     </div>
   );

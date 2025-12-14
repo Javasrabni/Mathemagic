@@ -5,7 +5,7 @@ import { useUser } from "@/context/userDataCookie";
 import { motion } from "framer-motion";
 import { BrainIcon, WaypointsIcon } from "lucide-react";
 
-type Material = {
+export type Material = {
   _id: string;
   title: string;
   class: number;
@@ -25,7 +25,7 @@ export const fadeUp = {
   transition: { duration: 0.35 }
 };
 
-export default function   ProgressPage() {
+export default function ProgressPage({ onData, index }: { onData: Material[], index: number | null }) {
   const { user } = useUser();
   const [materials, setMaterials] = useState<Material[]>([]);
   const [progress, setProgress] = useState<ProgressType[]>([]);
@@ -45,11 +45,11 @@ export default function   ProgressPage() {
     const fetchMaterials = async () => {
       try {
         const res = await fetch("/api/materials", {
-           cache: "force-cache"
+          cache: "force-cache"
         });
         const data = await res.json();
         setMaterials(data);
-      } catch(error) {
+      } catch (error) {
         console.error(error)
       }
       finally {
@@ -94,12 +94,12 @@ export default function   ProgressPage() {
   );
 
   return (
-    <motion.div
-      {...fadeUp}
-      className="px-6 space-y-8"
+    <div
+
+      className="space-y-6 pt-2"
     >
       {/* Title */}
-      <motion.div {...fadeUp} className="flex flex-col gap-1">
+      {/* <div  className="flex flex-col gap-1">
         <span className="flex flex-row gap-2 items-center">
           <WaypointsIcon width={16} />
           <h1 className="text-base font-semibold font-[poppins]">Silabus dan materi belajar</h1>
@@ -107,129 +107,89 @@ export default function   ProgressPage() {
         <p className="text-xs text-stone-400">
           Mulai belajar matematika sesuai dengan tingkatan kamu, mulai dari kelas 7 - 9.
         </p>
-      </motion.div>
+      </div> */}
+      <div className="flex flex-col  space-y-4">
+        {[index].map((cls, cindex) => {
+          const filtered = materials.filter((m) => m.class === cls);
 
-      {[7, 8, 9].map((cls, cindex) => {
-        const filtered = materials.filter((m) => m.class === cls);
+          return (
+            <section key={cls} className="space-y-4 ">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                {/* Skeleton */}
+                {isLoading &&
+                  Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i}>{renderSkeletonCard()}</div>
+                  ))}
 
-        return (
-          <motion.section
-            key={cls}
-            {...fadeUp}
-            transition={{ duration: 0.35, delay: cindex * 0.15 }}
-            className="space-y-4"
-          >
-            <motion.h2
-              {...fadeUp}
-              transition={{ duration: 0.35, delay: 0.05 }}
-              className="text-xl font-semibold"
-            >
-              Kelas {cls}
-            </motion.h2>
+                {/* Data cards */}
+                {!isLoading &&
+                  filtered.map((m, index) => {
+                    const completed = progress.filter(
+                      (p) => p.materialTitle === m.title && p.isRead
+                    ).length;
 
-            <motion.div
-              {...fadeUp}
-              transition={{ duration: 0.35, delay: 0.1 }}
-              className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"
-            >
-              {/* Skeleton */}
-              {isLoading &&
-                Array.from({ length: 3 }).map((_, i) => (
-                  <div key={i}>{renderSkeletonCard()}</div>
-                ))}
+                    const percentage = Math.round(
+                      (completed / m.subTopics.length) * 100
+                    );
 
-              {/* Data cards */}
-              {!isLoading &&
-                filtered.map((m, index) => {
-                  const completed = progress.filter(
-                    (p) => p.materialTitle === m.title && p.isRead
-                  ).length;
-
-                  const percentage = Math.round(
-                    (completed / m.subTopics.length) * 100
-                  );
-
-                  return (
-                    <motion.div
-                      key={m._id}
-                      {...fadeUp}
-                      transition={{
-                        duration: 0.35,
-                        delay: index * 0.07
-                      }}
-                      className="bg-white border rounded-xl p-5 shadow-sm hover:shadow-md transition cursor-pointer"
-                      onClick={() => router.push(`/dashboard/material/${m._id}`)}
-                    >
-                      <motion.div
-                        {...fadeUp}
-                        transition={{ duration: 0.3, delay: 0.05 }}
-                        className="flex justify-between items-start"
+                    return (
+                      <div key={m._id} className="bg-stone-100 rounded-xl p-4  cursor-pointer" onClick={() => router.push(`/dashboard/material/${m._id}`)}
                       >
-                        <h3 className="font-semibold text-lg">{m.title}</h3>
-                        <span
-                          className={`text-xs px-2 py-1 rounded-md ${percentage === 100
-                              ? "bg-green-100 text-green-700 border border-green-300"
-                              : "bg-blue-100 text-blue-700 border border-blue-300"
+                        <div className="flex justify-between items-start">
+                          <div className="flex flex-col">
+                            <h1 className="font-semibold text-sm font-[poppins]">{m.title}</h1>
+                            <p className="text-xs text-gray-500 font-[urbanist]">
+                              {completed}/{m.subTopics.length} Submateri selesai
+                            </p>
+                          </div>
+                          <span className={`text-xs px-2 py-1 rounded-md ${percentage === 100
+                            ? "bg-green-100 text-green-700 border border-green-300"
+                            : "bg-blue-100 text-blue-700 border border-blue-300"
                             }`}
-                        >
-                          {percentage}%
-                        </span>
-                      </motion.div>
+                          >
+                            {percentage}%
+                          </span>
+                        </div>
 
-                      <motion.p
-                        {...fadeUp}
-                        transition={{ duration: 0.3, delay: 0.1 }}
-                        className="text-sm text-neutral-500 mt-1"
-                      >
-                        {completed}/{m.subTopics.length} sub-topik selesai
-                      </motion.p>
 
-                      <motion.div
-                        {...fadeUp}
-                        transition={{ duration: 0.3, delay: 0.15 }}
-                        className="mt-4 bg-neutral-100 rounded-lg p-3 max-h-32 overflow-y-auto"
-                      >
-                        <motion.ul
-                          {...fadeUp}
-                          transition={{ duration: 0.3, delay: 0.2 }}
-                          className="text-sm space-y-1"
-                        >
-                          {m.subTopics.map((s, idx) => {
-                            const read = progress.some(
-                              (p) =>
-                                p.materialTitle === m.title &&
-                                p.subTopicIndex === idx &&
-                                p.isRead
-                            );
 
-                            return (
-                              <motion.li
-                                key={idx}
-                                {...fadeUp}
-                                transition={{
-                                  duration: 0.25,
-                                  delay: 0.25 + idx * 0.02
-                                }}
-                                className={`flex items-center gap-2 ${read ? "text-green-700 font-medium" : ""
-                                  }`}
-                              >
-                                <span
-                                  className={`w-2 h-2 rounded-full ${read ? "bg-green-500" : "bg-gray-400"
-                                    }`}
-                                />
-                                {s.title}
-                              </motion.li>
-                            );
-                          })}
-                        </motion.ul>
-                      </motion.div>
-                    </motion.div>
-                  );
-                })}
-            </motion.div>
-          </motion.section>
-        );
-      })}
-    </motion.div>
+                        <div className="mt-0 bg-neutral-100 rounded-lg p-3 max-h-32 overflow-y-auto">
+                          <ul className="text-xs space-y-1 font-[urbanist]">
+                            {m.subTopics.map((s, idx) => {
+                              const read = progress.some(
+                                (p) =>
+                                  p.materialTitle === m.title &&
+                                  p.subTopicIndex === idx &&
+                                  p.isRead
+                              );
+
+                              return (
+                                <li key={idx} className={`flex  items-center gap-2 ${read ? "text-green-500 font-semibold" : ""}`}>
+                                  <span className={`w-1 h-1 rounded-full ${read ? "bg-green-500" : "bg-gray-400"}`} />
+                                  {s.title}
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            </section>
+          );
+        })}
+        {/* {onData?.map((i, idx) =>
+          <div key={idx} className="w-full bg-stone-100 p-4 rounded-xl">
+            <h1 className="font-semibold font-[poppins] text-sm">{i.title}</h1>
+            <div className="w-full h-1 rounded-xl ">
+              <div className={`w-[${}] bg-[var(--accentColor)] h-full rounded-full`} />
+            </div>
+          </div>
+        )} */}
+      </div>
+
+    </div>
   );
 }
+

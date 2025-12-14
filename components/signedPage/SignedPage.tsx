@@ -109,10 +109,13 @@ export default function SignedPage() {
     // OPEN LIST MATERI BTN
     const [openListMateri, setOpenListMateri] = useState(false)
     const [getListMateriData, setGetListMateriData] = useState<Material[]>([])
+    const [getIndexMateri, setIndexMateri] = useState<null | number>(null)
 
-    function OpenNGetDataListMateri(data: any) {
+    function OpenNGetDataListMateri(data: any, index: number) {
         setOpenListMateri(true)
         setGetListMateriData(data)
+        setIndexMateri(index)
+
     }
 
     return (
@@ -124,25 +127,47 @@ export default function SignedPage() {
             <div className="bg-[var(--accentColor)] w-full h-full flex justify-between flex-col pt-8 pb-16 px-6 gap-6">
 
                 {/* OPEN LIST MATER */}
-                <div className={`fixed top-0 left-0 w-full h-full ${openListMateri ? 'flex z-120' : 'z-[-120]'}`}>
-                    <div className="relative top-0 left-0 z-125 w-full h-full bg-[#00000050]">
-                        <div className="absolute z-73 w-full h-full top-0 left-0 bg-[#00000080]" />
-                        <div className={`w-full h-72 relative`}>
-                            <Image
-                                src={getListMateriData[0]?.class === 7 ? '/Assets/card/card_02.png' : getListMateriData[0]?.class === 8 ? '/Assets/card/card03.png' : '/Assets/card/card04.png'}
-                                alt=""
-                                fill
-                                className="select-none object-cover blur-[3px] scale-[105%]"
-                            />
-                            {getListMateriData[0] && (
-                                <p>{getListMateriData[0].class}</p>
-                            )}
-                        </div>
+               <div
+  className={`
+    fixed inset-0
+    bg-black/50
+    transition-opacity duration-300 ease-in-out
+    ${openListMateri ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
+    z-120
+  `}
+>
+  <div
+    className={`
+      relative w-full h-full
+      transition-transform duration-300 ease-out
+      ${openListMateri ? 'translate-y-0' : 'translate-y-full'}
+    `}
+  >
+    <div className="w-full h-72 relative">
+      <div className="relative z-10 h-[80%] text-white p-6 flex items-center justify-center">
+        <h1 className="text-lg font-bold font-[urbanist]">
+          Kelas {getListMateriData[0]?.class}
+        </h1>
+      </div>
 
-                    </div>
-                </div>
+      <Image
+        src={
+          getListMateriData[0]?.class === 7
+            ? '/Assets/card/card_02.png'
+            : getListMateriData[0]?.class === 8
+            ? '/Assets/card/card03.png'
+            : '/Assets/card/card04.png'
+        }
+        alt=""
+        fill
+        className="select-none object-cover blur-[3px] scale-[105%] brightness-40"
+      />
+    </div>
+  </div>
+</div>
 
-                <OpenListMateri onOpen={openListMateri} setOnOpen={setOpenListMateri} />
+
+                <OpenListMateri onOpen={openListMateri} setOnOpen={setOpenListMateri} onData={getListMateriData} indexMateri={getIndexMateri}/>
 
                 {/* GREETING N PHOTO PROFILE */}
                 <div className="w-full h-full flex flex-row justify-between items-center gap-0">
@@ -331,7 +356,7 @@ export default function SignedPage() {
                                             <div className="w-full flex flex-row justify-between items-center">
                                                 <p className="text-xs text-white/80 text-right font-bold font-[urbanist]">{totalQuiz} Soal</p>
                                                 <button
-                                                    onClick={() => OpenNGetDataListMateri(filtered)}
+                                                    onClick={() => OpenNGetDataListMateri(filtered, cls)}
                                                     className="w-fit px-4 py-1 bg-[var(--accentColor)] rounded-full shadow-md hover:bg-blue-600 transition"
                                                 >
                                                     <p className="text-white font-semibold text-xs font-[urbanist]">
